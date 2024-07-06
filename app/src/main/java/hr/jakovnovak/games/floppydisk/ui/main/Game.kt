@@ -1,11 +1,11 @@
 package hr.jakovnovak.games.floppydisk.ui.main
 
-import android.view.SurfaceView
+import android.graphics.RectF
 import kotlin.math.abs
 import kotlin.math.max
 
 // koristimo normirane koordinate za x, y -> tj. idu od (-1, -1) do (1, 1)
-data class FloppyDisk(var x : Float, var y : Float, var velocity : Float = -0.05f)
+data class FloppyDisk(var x : Float, var y : Float, var velocity : Float = -0.01f)
 data class Tower(var x : Float, var y : Float, var height : Float, var width : Float)
 
 class Game(private val view: GameSurfaceView) {
@@ -16,9 +16,10 @@ class Game(private val view: GameSurfaceView) {
         if(floppy.y > 1f)
             return true
 
+        val floppyRect = RectF(floppy.x, floppy.y, floppy.x + 0.1f, floppy.y + 0.05f)
         return towers.filter {
-                it.x < floppy.x && it.x + it.height < floppy.x
-             && floppy.y > it.y && floppy.y < it.y + it.height
+                val itRect = RectF(it.x, it.y, it.x + it.width, it.y + it.height)
+                return itRect.intersect(floppyRect) || itRect.contains(floppyRect)
             }.isNotEmpty()
     }
 
@@ -30,8 +31,8 @@ class Game(private val view: GameSurfaceView) {
 
     fun gameLoop() {
         for (i in 0..1) {
-            towers.add(Tower(i * 1f, -1f, 0.2f, 0.15f))
-            towers.add(Tower(i * 1f, 0.6f, 0.2f, 0.15f))
+            towers.add(Tower(i * 1f, -1f, 0.2f, 0.35f))
+            towers.add(Tower(i * 1f, 0.6f, 0.2f, 0.35f))
         }
         towers.map { t -> Tower(t.x + 0.5f, t.y, t.height, t.width) }
 
@@ -49,14 +50,14 @@ class Game(private val view: GameSurfaceView) {
             if(testIntersect())
                 break;
 
-            floppy.velocity = max(floppy.velocity - 0.01f, -0.05f)
+            floppy.velocity = max(floppy.velocity - 0.01f, -0.03f)
             towers.forEach { t ->
                 if(t.x < -1f)
                     t.x = 1f
             }
 
             view.updateView(floppy, towers)
-            Thread.sleep(50)
+            Thread.sleep(30)
         }
     }
 }

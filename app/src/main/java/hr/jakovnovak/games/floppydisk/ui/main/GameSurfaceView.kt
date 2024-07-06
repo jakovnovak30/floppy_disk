@@ -19,10 +19,12 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null) : Surface
                                         if(MainViewModel.darkMode) R.drawable.background_night else R.drawable.background,
                                         context.theme)
                                     ?.toBitmap() ?: throw IllegalStateException()
-    private val floppyDiskSprite : Bitmap = ResourcesCompat.getDrawable(context.resources, R.drawable.icon_floppy, context.theme)
+    private val floppyDiskSprite : Bitmap = ResourcesCompat.getDrawable(context.resources, R.drawable.floppy_disk, context.theme)
                                                           ?.toBitmap() ?: throw IllegalStateException()
     private val computerSprite : Bitmap = ResourcesCompat.getDrawable(context.resources, R.drawable.computer_flipped, context.theme)
-                                                         ?.toBitmap() ?: throw IllegalStateException()
+                                                        ?.toBitmap() ?: throw IllegalStateException()
+    private val cdSprite : Bitmap = ResourcesCompat.getDrawable(context.resources, R.drawable.cd, context.theme)
+                                                  ?.toBitmap() ?: throw IllegalStateException()
     private val rect = Rect()
     private var ready : Boolean = false
 
@@ -48,7 +50,7 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null) : Surface
 
         val floppyX = ((floppy.x + 1f)/2 * this.width).toInt()
         val floppyY = ((floppy.y + 1f)/2 * this.height).toInt()
-        val floppyWidth = (0.1f * this.width).toInt()
+        val floppyWidth = (0.2f * this.width).toInt()
         val floppyHeight = (0.1f * this.height).toInt()
         rect.set(floppyX, floppyY, floppyX + floppyWidth, floppyY + floppyHeight)
         canvas.drawBitmap(floppyDiskSprite, null, rect, null)

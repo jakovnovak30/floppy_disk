@@ -33,8 +33,8 @@ class GameActivity : Activity() {
         thread.start()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        thread.join(10)
+    override fun onPause() {
+        super.onPause()
+        thread.join()
     }
 }
