@@ -17,6 +17,7 @@ class GameActivity : Activity() {
         gameSurfaceView = findViewById<GameSurfaceView>(R.id.gameSurfaceView)
 
         val game : Game = Game(gameSurfaceView)
+        gameSurfaceView.game = game
 
         val runnable = Runnable {
             game.gameLoop()
