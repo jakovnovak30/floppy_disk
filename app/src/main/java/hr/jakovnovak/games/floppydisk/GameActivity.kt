@@ -1,33 +1,30 @@
 package hr.jakovnovak.games.floppydisk
 
-import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import androidx.appcompat.app.AppCompatActivity
+import android.app.Activity
 import android.os.Bundle
-import android.view.SurfaceView
-import androidx.core.content.res.ResourcesCompat
-import androidx.core.graphics.drawable.toBitmap
+import hr.jakovnovak.games.floppydisk.ui.main.Game
+import hr.jakovnovak.games.floppydisk.ui.main.GameSurfaceView
 
-class GameActivity : AppCompatActivity() {
+class GameActivity : Activity() {
+    private lateinit var gameSurfaceView: GameSurfaceView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_game)
+        gameSurfaceView = findViewById<GameSurfaceView>(R.id.gameSurfaceView)
 
-        val surfaceView = findViewById<SurfaceView>(R.id.surfaceView)
+        val game : Game = Game(gameSurfaceView)
 
-        surfaceView.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+        val thread = Runnable {
+            game.gameLoop()
+            // TODO: eventualno neki game over screen?
         }
 
-        val bitmap : Bitmap? = ResourcesCompat.getDrawable(baseContext.resources, R.drawable.background, baseContext?.theme)
-                                              ?.toBitmap(config = null)
-        if(bitmap == null)
-            throw IllegalStateException()
+        gameSurfaceView.setOnClickListener {
+            game.setVelocity(0.1f)
+        }
 
-        val newFrame = Canvas(bitmap)
-        surfaceView.draw(newFrame)
+        //thread.run()
     }
 }

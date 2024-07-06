@@ -8,10 +8,10 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
+import hr.jakovnovak.games.floppydisk.ui.main.MainViewModel
 
 class MainActivity : Activity() {
     private var aboutVisible : Boolean = false
-    private var darkMode : Boolean = false
     private lateinit var rootView: View
     private lateinit var startButton : Button
     private lateinit var aboutButton : Button
@@ -19,11 +19,11 @@ class MainActivity : Activity() {
 
     private fun updateBackground() {
         rootView.background = ResourcesCompat.getDrawable(baseContext.resources,
-                                    if(darkMode) R.drawable.background_night else R.drawable.background,
+                                    if(MainViewModel.darkMode) R.drawable.background_night else R.drawable.background,
                                     baseContext?.theme)
 
-        val newColor : Int = if(darkMode) Color.DKGRAY else Color.LTGRAY
-        val newTextColor : Int = if(darkMode) Color.WHITE else Color.BLACK
+        val newColor : Int = if(MainViewModel.darkMode) Color.DKGRAY else Color.LTGRAY
+        val newTextColor : Int = if(MainViewModel.darkMode) Color.WHITE else Color.BLACK
         startButton.setBackgroundColor(newColor)
         aboutButton.setBackgroundColor(newColor)
 
@@ -57,8 +57,14 @@ class MainActivity : Activity() {
         }
 
         darkModeButton.setOnClickListener {
-            darkMode = !darkMode
+            MainViewModel.darkMode = !MainViewModel.darkMode
             updateBackground()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        textArea.text = "Floppy Disk"
+        aboutVisible = false
     }
 }
