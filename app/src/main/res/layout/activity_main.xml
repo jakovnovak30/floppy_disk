@@ -5,8 +5,8 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background_night"
     android:visibility="visible"
-    android:background="@drawable/background"
     tools:context=".MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,12 +15,15 @@
 
         <TextView
             android:id="@+id/mainMenuTitle"
-            android:layout_width="160dp"
-            android:layout_height="80dp"
+            style="@style/Widget.MaterialComponents.TextView"
+            android:layout_width="279dp"
+            android:layout_height="190dp"
             android:layout_marginTop="180dp"
-            android:fontFamily="sans-serif-medium"
+            android:fontFamily="casual"
             android:text="Floppy Disk"
+            android:textAlignment="center"
             android:textSize="24sp"
+            android:textStyle="bold"
             android:typeface="serif"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -28,13 +31,45 @@
 
         <Button
             android:id="@+id/playGameButton"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="140dp"
             android:layout_height="75dp"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="280dp"
+            android:background="@color/white"
             android:text="Play Game"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mainMenuTitle"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <Button
+            android:id="@+id/aboutGameButton"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="140dp"
+            android:layout_height="75dp"
+            android:layout_marginTop="280dp"
+            android:layout_marginEnd="60dp"
+            android:background="@color/white"
+            android:text="About"
+            android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/mainMenuTitle" />
+            app:layout_constraintTop_toBottomOf="@+id/mainMenuTitle"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <Button
+            android:id="@+id/darkModeButton"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/dark_mode"
+            android:isScrollContainer="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
