@@ -3,7 +3,9 @@ package hr.jakovnovak.games.floppydisk
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import androidx.core.view.isVisible
 import hr.jakovnovak.games.floppydisk.ui.main.Game
+import hr.jakovnovak.games.floppydisk.ui.main.GameStateListener
 import hr.jakovnovak.games.floppydisk.ui.main.GameSurfaceView
 
 class GameActivity : Activity() {
@@ -15,26 +17,21 @@ class GameActivity : Activity() {
 
         setContentView(R.layout.activity_game)
         gameSurfaceView = findViewById<GameSurfaceView>(R.id.gameSurfaceView)
+        gameSurfaceView.isVisible = true
 
-        val game : Game = Game(gameSurfaceView)
-
-        val runnable = Runnable {
-            game.gameLoop()
-
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-        }
-
-        gameSurfaceView.setOnClickListener {
-            game.setVelocity(0.1f)
-        }
-
-        thread = Thread(runnable)
-        thread.start()
+        gameSurfaceView.game.attach(object : GameStateListener {
+            override fun scoreChanged(newScore : Int) {
+                // TODO: update text...
+                return
+            }
+            override fun gameOver(score : Int) {
+                val intent = Intent(this@GameActivity, MainActivity::class.java)
+                startActivity(intent)
+            }
+        })
     }
 
     override fun onPause() {
         super.onPause()
-        thread.join()
     }
 }

@@ -9,8 +9,14 @@ data class FloppyDisk(var x : Float, var y : Float, var velocity : Float = -0.01
 data class Tower(var x : Float, var y : Float, var height : Float, var width : Float)
 
 class Game(private val view: GameSurfaceView) {
-    private val towers: MutableList<Tower> = mutableListOf<Tower>()
-    private val floppy: FloppyDisk = FloppyDisk(-0.3f, 0f)
+    val towers: MutableList<Tower> = mutableListOf<Tower>()
+    val floppy: FloppyDisk = FloppyDisk(-0.3f, 0f)
+
+    private val listeners : MutableList<GameStateListener> = mutableListOf<GameStateListener>()
+
+    fun attach(listener : GameStateListener) = listeners.add(listener)
+    private fun notifyScore() = listeners.forEach { l -> l.scoreChanged(MainViewModel.score) }
+    private fun notifyOver() = listeners.forEach { l -> l.gameOver(MainViewModel.score) }
 
     private fun testIntersect() : Boolean {
         if(floppy.y > 1f)
@@ -56,8 +62,12 @@ class Game(private val view: GameSurfaceView) {
                     t.x = 1f
             }
 
-            view.updateView(floppy, towers)
+            //view.invalidate()
+            view.testUpdate()
             Thread.sleep(30)
         }
+
+        // GAME OVER
+        notifyOver()
     }
 }
