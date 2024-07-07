@@ -29,7 +29,7 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null) : Surface
     private val rect = Rect()
 
     internal val game : Game
-    private val gameThread : Thread
+    internal val gameThread : Thread
 
     init {
         Log.d(null, "GameSurfaceView Initialized!")
@@ -39,8 +39,7 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null) : Surface
             game.gameLoop()
             // TODO: game over screen...
         })
-
-        visibility = VISIBLE
+        setWillNotDraw(false)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -55,8 +54,8 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null) : Surface
 
         val floppyX = ((floppy.x + 1f)/2 * this.width).toInt()
         val floppyY = ((floppy.y + 1f)/2 * this.height).toInt()
-        val floppyWidth = (0.2f * this.width).toInt()
-        val floppyHeight = (0.1f * this.height).toInt()
+        val floppyWidth = (Game.floppyWidth * this.width).toInt()
+        val floppyHeight = (Game.floppyHeight * this.height).toInt()
         rect.set(floppyX, floppyY, floppyX + floppyWidth, floppyY + floppyHeight)
         canvas.drawBitmap(floppyDiskSprite, null, rect, null)
 
@@ -71,15 +70,13 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null) : Surface
         }
     }
 
-    fun testUpdate() {
+    fun update() {
         val canvas = holder.lockCanvas()
-        this.onDraw(canvas)
+        this.invalidate()
         holder.unlockCanvasAndPost(canvas)
     }
 
     override fun surfaceCreated(holder: SurfaceHolder) {
-        isVisible = true
-
         setOnClickListener {
             game.setVelocity(0.1f)
         }

@@ -29,9 +29,12 @@ class GameActivity : Activity() {
                 startActivity(intent)
             }
         })
+
+        this.setVisible(true)
     }
 
     override fun onPause() {
         super.onPause()
+        // TODO: napravi tu nest pametnoga
     }
 }
