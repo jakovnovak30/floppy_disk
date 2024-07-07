@@ -1,28 +1,34 @@
 package hr.jakovnovak.games.floppydisk.ui.main
 
-import android.graphics.RectF
 import android.util.Log
 import kotlin.math.abs
 import kotlin.math.max
+import kotlin.random.Random
 
 // koristimo normirane koordinate za x, y -> tj. idu od (-1, -1) do (1, 1)
 data class FloppyDisk(var x : Float, var y : Float, var velocity : Float = -0.01f)
-data class Tower(var x : Float, var y : Float, var height : Float, var width : Float)
+data class Obstacle(var x : Float, var y : Float, var height : Float, var width : Float)
 
 class Game(private val view: GameSurfaceView) {
-    val towers: MutableList<Tower> = mutableListOf()
+    val towers: MutableList<Obstacle> = mutableListOf()
+    val cds : MutableList<Obstacle> = mutableListOf()
     val floppy: FloppyDisk = FloppyDisk(-0.3f, 0f)
 
     private val listeners : MutableList<GameStateListener> = mutableListOf()
 
     // static variables
     companion object {
-        const val towerSpacingHorizontal = 1f
-        const val towerHeight = 0.3f
-        const val towerWidth = 0.45f
+        const val towerSpacingHorizontal = 1.5f
+        const val towerHeight = 0.4f
+        const val towerWidth = 0.65f
 
-        const val floppyHeight = 0.2f
-        const val floppyWidth = 0.4f
+        const val floppyHeight = 0.15f
+        const val floppyWidth = 0.3f
+
+        const val cdHeight = 0.1f
+        const val cdWidth  =0.15f
+        const val cdSpawnChance = 0.1f
+        const val coolDowntime = 500 // milisekunde
     }
 
     fun attach(listener : GameStateListener) = listeners.add(listener)
@@ -33,15 +39,11 @@ class Game(private val view: GameSurfaceView) {
         if(floppy.y > 1f)
             return true
 
-        towers.forEach {
-            if(it.y > -1f)
-                Log.w("URGENT!", "tower: ${it.x}, ${it.y}")
-            Log.d("Checking coords: ", "floppy: ${floppy.x}, ${floppy.y}\n tower: ${it.x}, ${it.y}")
-                if( floppy.x + floppyWidth > it.x && floppy.x < it.x + it.width
-                        && floppy.y + floppyHeight > it.y && floppy.y < it.y + it.height)
-                    return true
-            }
-        return false
+        val intersectPredicate : (Obstacle) -> Boolean = {
+            floppy.x + floppyWidth > it.x && floppy.x < it.x + it.width
+         && floppy.y + floppyHeight > it.y && floppy.y < it.y + it.height
+        }
+        return towers.any(intersectPredicate) || cds.any(intersectPredicate)
     }
 
     fun setVelocity(value : Float) {
@@ -52,10 +54,10 @@ class Game(private val view: GameSurfaceView) {
 
     fun gameLoop() {
         for (i in 0..1) {
-            towers.add(Tower(i * towerSpacingHorizontal, -1f, towerHeight, towerWidth))
-            towers.add(Tower(i * towerSpacingHorizontal, 1f - towerHeight, towerHeight, towerWidth))
+            towers.add(Obstacle(i * towerSpacingHorizontal, -1f, towerHeight, towerWidth))
+            towers.add(Obstacle(i * towerSpacingHorizontal, 1f - towerHeight, towerHeight, towerWidth))
         }
-        towers.map { t -> Tower(t.x + 0.5f, t.y, t.height, t.width) }
+        towers.map { t -> Obstacle(t.x + 0.5f, t.y, t.height, t.width) }
 
         val horizontalVelocity = 0.03f
 
@@ -65,7 +67,8 @@ class Game(private val view: GameSurfaceView) {
         while(true) {
             floppy.y -= floppy.velocity * 0.5f
             val countBefore = towers.count { t -> t.x < -0.33f }
-            towers.forEach { t -> t.x -= horizontalVelocity }
+            towers.forEach { it.x -= horizontalVelocity }
+            cds.forEach { it.x -= horizontalVelocity }
             val countAfter = towers.count { t -> t.x < -0.33f }
 
             if(countAfter != countBefore)
@@ -76,9 +79,18 @@ class Game(private val view: GameSurfaceView) {
                 break
 
             floppy.velocity = max(floppy.velocity - 0.01f, -0.03f)
-            towers.forEach { t ->
-                if(t.x < -1f)
-                    t.x = 1f
+            towers.forEach {
+                if(it.x + it.width < -1f)
+                    it.x = 1f
+            }
+            cds.removeAll { it.x + it.width < -1f }
+
+            // postoji šansa da se spawna cd ako nema dovoljno cd-a
+            // TODO: difficulty? potencijalno...
+            val rand = Random.nextFloat()
+            if(cds.size < 2 && rand < cdSpawnChance && System.currentTimeMillis() - lastTime > coolDowntime) {
+                cds.add(Obstacle(1f, Random.nextFloat() - 0.5f, cdHeight, cdWidth))
+                lastTime = System.currentTimeMillis()
             }
 
             view.update()

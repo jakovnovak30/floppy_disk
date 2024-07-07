@@ -49,24 +49,32 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null) : Surface
         rect.set(0, 0, width, height)
         canvas.drawBitmap(background, null, rect, null)
 
-        val floppy = game.floppy
-        val towers = game.towers
+        val convertCoords : (Obstacle) -> List<Int> = {
+            listOf(
+                ((it.x + 1f)/2 * this.width).toInt(),
+                ((it.y + 1f)/2 * this.height).toInt(),
+                ((it.x + it.width + 1f)/2 * this.width).toInt(),
+                ((it.y + it.height + 1f)/2 * this.height).toInt()
+            )
+        }
 
-        val floppyX = ((floppy.x + 1f)/2 * this.width).toInt()
-        val floppyY = ((floppy.y + 1f)/2 * this.height).toInt()
-        val floppyX2 = ((floppy.x + Game.floppyWidth + 1f)/2 * this.width).toInt()
-        val floppyY2 = ((floppy.y + Game.floppyHeight + 1f)/2 * this.height).toInt()
+        val (floppyX, floppyY, floppyX2, floppyY2) = convertCoords(Obstacle(game.floppy.x, game.floppy.y,
+                                                                            Game.floppyHeight, Game.floppyWidth))
         rect.set(floppyX, floppyY, floppyX2, floppyY2)
         canvas.drawBitmap(floppyDiskSprite, null, rect, null)
 
-        towers.forEach {
-            val towerX = ((it.x + 1f)/2 * this.width).toInt()
-            val towerY = ((it.y + 1f)/2 * this.height).toInt()
-            val towerX2 = ((it.x + it.width + 1f)/2 * this.width).toInt()
-            val towerY2 = ((it.y + it.height + 1f)/2 * this.height).toInt()
+        game.towers.forEach {
+            val (towerX, towerY, towerX2, towerY2) = convertCoords(it)
 
             rect.set(towerX, towerY, towerX2, towerY2)
             canvas.drawBitmap(computerSprite, null, rect, null)
+        }
+
+        game.cds.forEach {
+            val (cdX, cdY, cdX2, cdY2) = convertCoords(it)
+
+            rect.set(cdX, cdY, cdX2, cdY2)
+            canvas.drawBitmap(cdSprite, null, rect, null)
         }
     }
 
