@@ -61,11 +61,12 @@ class Game(private val view: GameSurfaceView) {
 
         val horizontalVelocity = 0.03f
 
-        val desiredFps = 50f
+        val desiredFps = 80f
         val fpsInterval : Float = 1000f / desiredFps
         var lastTime : Long = 0
+
         while(true) {
-            floppy.y -= floppy.velocity * 0.5f
+            floppy.y -= floppy.velocity * 0.4f
             val countBefore = towers.count { t -> t.x < -0.33f }
             towers.forEach { it.x -= horizontalVelocity }
             cds.forEach { it.x -= horizontalVelocity }
@@ -94,13 +95,6 @@ class Game(private val view: GameSurfaceView) {
             }
 
             view.update()
-            /*
-            val currTime = System.currentTimeMillis()
-            if(currTime - lastTime < fpsInterval) {
-                Thread.sleep(abs(fpsInterval - (currTime-lastTime).toFloat()).toLong())
-            }
-            lastTime = System.currentTimeMillis()
-             */
             Thread.sleep(fpsInterval.toLong())
         }
 

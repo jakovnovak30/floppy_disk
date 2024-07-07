@@ -39,7 +39,7 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null) : Surface
             game.gameLoop()
             // TODO: game over screen...
         })
-        setWillNotDraw(false)
+        //setWillNotDraw(false)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -79,8 +79,8 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null) : Surface
     }
 
     fun update() {
-        val canvas = holder.lockCanvas()
-        this.invalidate()
+        val canvas : Canvas = holder.lockCanvas()
+        this.onDraw(canvas)
         holder.unlockCanvasAndPost(canvas)
     }
 

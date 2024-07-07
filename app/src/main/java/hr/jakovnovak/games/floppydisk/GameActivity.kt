@@ -10,7 +10,6 @@ import hr.jakovnovak.games.floppydisk.ui.main.GameSurfaceView
 
 class GameActivity : Activity() {
     private lateinit var gameSurfaceView: GameSurfaceView
-    private lateinit var thread : Thread
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
