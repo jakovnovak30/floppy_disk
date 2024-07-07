@@ -1,6 +1,7 @@
 package hr.jakovnovak.games.floppydisk.ui.main
 
 import android.graphics.RectF
+import android.util.Log
 import kotlin.math.abs
 import kotlin.math.max
 
@@ -17,11 +18,11 @@ class Game(private val view: GameSurfaceView) {
     // static variables
     companion object {
         const val towerSpacingHorizontal = 1f
-        const val towerHeight = 0.2f
-        const val towerWidth = 0.35f
+        const val towerHeight = 0.3f
+        const val towerWidth = 0.45f
 
-        const val floppyHeight = 0.1f
-        const val floppyWidth = 0.2f
+        const val floppyHeight = 0.2f
+        const val floppyWidth = 0.4f
     }
 
     fun attach(listener : GameStateListener) = listeners.add(listener)
@@ -32,11 +33,15 @@ class Game(private val view: GameSurfaceView) {
         if(floppy.y > 1f)
             return true
 
-        val floppyRect = RectF(floppy.x, floppy.y, floppy.x + floppyWidth*2f, floppy.y + floppyHeight*2f)
-        return towers.filter {
-                val itRect = RectF(it.x, it.y, it.x + it.width*2f, it.y + it.height*2f)
-                return itRect.intersect(floppyRect) || itRect.contains(floppyRect)
-            }.isNotEmpty()
+        towers.forEach {
+            if(it.y > -1f)
+                Log.w("URGENT!", "tower: ${it.x}, ${it.y}")
+            Log.d("Checking coords: ", "floppy: ${floppy.x}, ${floppy.y}\n tower: ${it.x}, ${it.y}")
+                if( floppy.x + floppyWidth > it.x && floppy.x < it.x + it.width
+                        && floppy.y + floppyHeight > it.y && floppy.y < it.y + it.height)
+                    return true
+            }
+        return false
     }
 
     fun setVelocity(value : Float) {
@@ -48,13 +53,13 @@ class Game(private val view: GameSurfaceView) {
     fun gameLoop() {
         for (i in 0..1) {
             towers.add(Tower(i * towerSpacingHorizontal, -1f, towerHeight, towerWidth))
-            towers.add(Tower(i * towerSpacingHorizontal, 1f - towerHeight*2f, towerHeight, towerWidth))
+            towers.add(Tower(i * towerSpacingHorizontal, 1f - towerHeight, towerHeight, towerWidth))
         }
         towers.map { t -> Tower(t.x + 0.5f, t.y, t.height, t.width) }
 
         val horizontalVelocity = 0.03f
 
-        val desiredFps = 60f
+        val desiredFps = 50f
         val fpsInterval : Float = 1000f / desiredFps
         var lastTime : Long = 0
         while(true) {

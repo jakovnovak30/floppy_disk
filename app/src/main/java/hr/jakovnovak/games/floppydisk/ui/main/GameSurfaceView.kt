@@ -54,18 +54,18 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null) : Surface
 
         val floppyX = ((floppy.x + 1f)/2 * this.width).toInt()
         val floppyY = ((floppy.y + 1f)/2 * this.height).toInt()
-        val floppyWidth = (Game.floppyWidth * this.width).toInt()
-        val floppyHeight = (Game.floppyHeight * this.height).toInt()
-        rect.set(floppyX, floppyY, floppyX + floppyWidth, floppyY + floppyHeight)
+        val floppyX2 = ((floppy.x + Game.floppyWidth + 1f)/2 * this.width).toInt()
+        val floppyY2 = ((floppy.y + Game.floppyHeight + 1f)/2 * this.height).toInt()
+        rect.set(floppyX, floppyY, floppyX2, floppyY2)
         canvas.drawBitmap(floppyDiskSprite, null, rect, null)
 
         towers.forEach {
             val towerX = ((it.x + 1f)/2 * this.width).toInt()
             val towerY = ((it.y + 1f)/2 * this.height).toInt()
-            val towerWidth = (it.width * this.width).toInt()
-            val towerHeight = (it.height * this.height).toInt()
+            val towerX2 = ((it.x + it.width + 1f)/2 * this.width).toInt()
+            val towerY2 = ((it.y + it.height + 1f)/2 * this.height).toInt()
 
-            rect.set(towerX, towerY, towerX + towerWidth, towerY + towerHeight)
+            rect.set(towerX, towerY, towerX2, towerY2)
             canvas.drawBitmap(computerSprite, null, rect, null)
         }
     }
