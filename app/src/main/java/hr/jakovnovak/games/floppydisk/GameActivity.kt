@@ -31,9 +31,4 @@ class GameActivity : Activity() {
 
         this.setVisible(true)
     }
-
-    override fun onPause() {
-        super.onPause()
-        // TODO: napravi tu nest pametnoga
-    }
 }

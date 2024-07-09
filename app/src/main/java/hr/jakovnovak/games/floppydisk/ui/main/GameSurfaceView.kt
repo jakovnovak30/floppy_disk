@@ -29,14 +29,18 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null) : Surface
     private val rect = Rect()
 
     internal val game : Game
-    internal val gameThread : Thread
+    private val gameThread : Thread
 
     init {
         Log.d(null, "GameSurfaceView Initialized!")
         holder.addCallback(this)
         game = Game(this)
         gameThread = Thread(Runnable {
-            game.gameLoop()
+            try {
+                game.gameLoop()
+            }
+            catch (_ : InterruptedException) { /* stop the thread */ }
+
             // TODO: game over screen...
         })
         //setWillNotDraw(false)
@@ -99,6 +103,5 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null) : Surface
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {
         gameThread.interrupt()
-        gameThread.join(1)
     }
 }

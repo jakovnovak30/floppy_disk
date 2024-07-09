@@ -26,7 +26,7 @@ class Game(private val view: GameSurfaceView) {
         const val floppyWidth = 0.3f
 
         const val cdHeight = 0.1f
-        const val cdWidth  =0.15f
+        const val cdWidth  = 0.15f
         const val cdSpawnChance = 0.1f
         const val coolDowntime = 500 // milisekunde
     }
