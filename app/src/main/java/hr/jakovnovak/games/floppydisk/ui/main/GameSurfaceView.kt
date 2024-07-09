@@ -10,8 +10,6 @@ import android.view.SurfaceHolder
 import android.view.SurfaceView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
-import androidx.core.view.isVisible
-import hr.jakovnovak.games.floppydisk.MainActivity
 import hr.jakovnovak.games.floppydisk.R
 
 

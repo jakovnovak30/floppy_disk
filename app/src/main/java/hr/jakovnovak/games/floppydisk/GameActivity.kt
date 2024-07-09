@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.core.view.isVisible
-import hr.jakovnovak.games.floppydisk.ui.main.Game
 import hr.jakovnovak.games.floppydisk.ui.main.GameStateListener
 import hr.jakovnovak.games.floppydisk.ui.main.GameSurfaceView
 
@@ -15,7 +14,7 @@ class GameActivity : Activity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_game)
-        gameSurfaceView = findViewById<GameSurfaceView>(R.id.gameSurfaceView)
+        gameSurfaceView = findViewById(R.id.gameSurfaceView)
         gameSurfaceView.isVisible = true
 
         gameSurfaceView.game.attach(object : GameStateListener {
@@ -28,7 +27,5 @@ class GameActivity : Activity() {
                 startActivity(intent)
             }
         })
-
-        this.setVisible(true)
     }
 }

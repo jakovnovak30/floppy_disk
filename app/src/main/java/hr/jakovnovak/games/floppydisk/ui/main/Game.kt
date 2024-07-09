@@ -7,7 +7,7 @@ import kotlin.random.Random
 
 // koristimo normirane koordinate za x, y -> tj. idu od (-1, -1) do (1, 1)
 data class FloppyDisk(var x : Float, var y : Float, var velocity : Float = -0.01f)
-data class Obstacle(var x : Float, var y : Float, var height : Float, var width : Float)
+data class Obstacle(var x : Float, var y : Float, var height : Float, var width : Float, var horizontalVelocity : Float = Game.horizontalVelocity)
 
 class Game(private val view: GameSurfaceView) {
     val towers: MutableList<Obstacle> = mutableListOf()
@@ -22,13 +22,16 @@ class Game(private val view: GameSurfaceView) {
         const val towerHeight = 0.4f
         const val towerWidth = 0.65f
 
-        const val floppyHeight = 0.15f
-        const val floppyWidth = 0.3f
+        const val floppyHeight = 0.12f
+        const val floppyWidth = 0.24f
 
         const val cdHeight = 0.1f
-        const val cdWidth  = 0.15f
-        const val cdSpawnChance = 0.1f
+        const val cdWidth  = 0.2f
+        const val cdSpawnChance = 0.05f
         const val coolDowntime = 500 // milisekunde
+
+        // defaultna vrijednost -> moremo ju menjati u @see Obstacle
+        val horizontalVelocity = 0.03f
     }
 
     fun attach(listener : GameStateListener) = listeners.add(listener)
@@ -59,8 +62,6 @@ class Game(private val view: GameSurfaceView) {
         }
         towers.map { t -> Obstacle(t.x + 0.5f, t.y, t.height, t.width) }
 
-        val horizontalVelocity = 0.03f
-
         val desiredFps = 80f
         val fpsInterval : Float = 1000f / desiredFps
         var lastTime : Long = 0
@@ -69,7 +70,10 @@ class Game(private val view: GameSurfaceView) {
             floppy.y -= floppy.velocity * 0.4f
             val countBefore = towers.count { t -> t.x < -0.33f }
             towers.forEach { it.x -= horizontalVelocity }
-            cds.forEach { it.x -= horizontalVelocity }
+            cds.forEach {
+                it.x -= it.horizontalVelocity
+                it.horizontalVelocity += Random.nextFloat() / 100
+            }
             val countAfter = towers.count { t -> t.x < -0.33f }
 
             if(countAfter != countBefore)
@@ -89,8 +93,8 @@ class Game(private val view: GameSurfaceView) {
             // postoji šansa da se spawna cd ako nema dovoljno cd-a
             // TODO: difficulty? potencijalno...
             val rand = Random.nextFloat()
-            if(cds.size < 2 && rand < cdSpawnChance && System.currentTimeMillis() - lastTime > coolDowntime) {
-                cds.add(Obstacle(1f, Random.nextFloat() - 0.5f, cdHeight, cdWidth))
+            if(cds.size < 3 && rand < cdSpawnChance && System.currentTimeMillis() - lastTime > coolDowntime) {
+                cds.add(Obstacle(1f, Random.nextFloat() - 0.5f, cdHeight, cdWidth, horizontalVelocity / 2))
                 lastTime = System.currentTimeMillis()
             }
 
