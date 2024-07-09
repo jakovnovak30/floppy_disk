@@ -1,6 +1,5 @@
 package hr.jakovnovak.games.floppydisk.ui.main
 
-import android.util.Log
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.random.Random
@@ -13,6 +12,7 @@ class Game(private val view: GameSurfaceView) {
     val towers: MutableList<Obstacle> = mutableListOf()
     val cds : MutableList<Obstacle> = mutableListOf()
     val floppy: FloppyDisk = FloppyDisk(-0.3f, 0f)
+    private var score = 0
 
     private val listeners : MutableList<GameStateListener> = mutableListOf()
 
@@ -35,8 +35,8 @@ class Game(private val view: GameSurfaceView) {
     }
 
     fun attach(listener : GameStateListener) = listeners.add(listener)
-    private fun notifyScore() = listeners.forEach { l -> l.scoreChanged(MainViewModel.score) }
-    private fun notifyOver() = listeners.forEach { l -> l.gameOver(MainViewModel.score) }
+    private fun notifyScore() = listeners.forEach { l -> l.scoreChanged(score) }
+    private fun notifyOver() = listeners.forEach { l -> l.gameOver(score) }
 
     private fun testIntersect() : Boolean {
         if(floppy.y > 1f)
@@ -76,8 +76,10 @@ class Game(private val view: GameSurfaceView) {
             }
             val countAfter = towers.count { t -> t.x < -0.33f }
 
-            if(countAfter != countBefore)
-                MainViewModel.score++
+            if(countAfter != countBefore) {
+                score++
+                notifyScore()
+            }
 
             // gotova igra
             if(testIntersect())

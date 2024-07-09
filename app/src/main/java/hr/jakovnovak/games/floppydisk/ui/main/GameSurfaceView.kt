@@ -1,6 +1,7 @@
 package hr.jakovnovak.games.floppydisk.ui.main
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Rect
@@ -15,7 +16,8 @@ import hr.jakovnovak.games.floppydisk.R
 
 class GameSurfaceView(context : Context, attrs : AttributeSet? = null) : SurfaceView(context, attrs), SurfaceHolder.Callback {
     private val background : Bitmap = ResourcesCompat.getDrawable(context.resources,
-                                        if(MainViewModel.darkMode) R.drawable.background_night else R.drawable.background,
+                                        if(context.getSharedPreferences("floppy_disk", MODE_PRIVATE).getBoolean("darkMode", false))
+                                                R.drawable.background_night else R.drawable.background,
                                         context.theme)
                                     ?.toBitmap() ?: throw IllegalStateException()
     private val floppyDiskSprite : Bitmap = ResourcesCompat.getDrawable(context.resources, R.drawable.floppy_disk, context.theme)
@@ -41,7 +43,6 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null) : Surface
 
             // TODO: game over screen...
         })
-        //setWillNotDraw(false)
     }
 
     override fun onDraw(canvas: Canvas) {
