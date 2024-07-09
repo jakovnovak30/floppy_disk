@@ -94,7 +94,7 @@ class Game(private val view: GameSurfaceView) {
             // TODO: difficulty? potencijalno...
             val rand = Random.nextFloat()
             if(cds.size < 3 && rand < cdSpawnChance && System.currentTimeMillis() - lastTime > coolDowntime) {
-                cds.add(Obstacle(1f, Random.nextFloat() - 0.5f, cdHeight, cdWidth, horizontalVelocity / 2))
+                cds.add(Obstacle(1f, Random.nextFloat() - 0.5f, cdHeight, cdWidth, 0f))
                 lastTime = System.currentTimeMillis()
             }
 
