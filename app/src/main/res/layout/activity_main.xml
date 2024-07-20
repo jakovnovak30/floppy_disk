@@ -16,8 +16,8 @@
         <TextView
             android:id="@+id/mainMenuTitle"
             style="@style/Widget.MaterialComponents.TextView"
-            android:layout_width="279dp"
-            android:layout_height="190dp"
+            android:layout_width="256dp"
+            android:layout_height="48dp"
             android:layout_marginTop="180dp"
             android:fontFamily="casual"
             android:text="Floppy Disk"
@@ -28,6 +28,14 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <hr.jakovnovak.games.floppydisk.ui.main.CustomLogoView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            app:layout_constraintBottom_toTopOf="@+id/playGameButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mainMenuTitle" />
 
         <Button
             android:id="@+id/playGameButton"
