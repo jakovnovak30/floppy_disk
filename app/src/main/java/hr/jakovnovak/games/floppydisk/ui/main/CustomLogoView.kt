@@ -23,6 +23,7 @@ class CustomLogoView(context : Context, attrs : AttributeSet?) : GLSurfaceView(c
         private val vao = IntArray(1)
         private val vbo = IntArray(2) // za xy i uv koordinate
         private val textures = IntArray(6)
+        private val textureBitmaps = mutableListOf<Bitmap>()
         private var program : Int = 0
         private lateinit var vertexSrc : String
         private lateinit var fragmentSrc : String
@@ -54,6 +55,20 @@ class CustomLogoView(context : Context, attrs : AttributeSet?) : GLSurfaceView(c
             1f, 0f,
             0f, 0f
         )
+
+        private fun loadTextures() {
+            val resIds = intArrayOf(R.drawable.floppy_disk, R.drawable.cd, R.drawable.computer_flipped,
+                R.drawable.mouse, R.drawable.floppy_disk_red, R.drawable.floppy_disk_green)
+            assert(resIds.size == textures.size)
+
+            for (resId in resIds) {
+                val texBitmap = BitmapFactory
+                    .decodeResource(res, resId)
+                    .copy(Bitmap.Config.ARGB_8888, false)
+
+                textureBitmaps.add(texBitmap)
+            }
+        }
 
         override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
             GLES32.glClearColor(0f, 0f, 0f, 0f)
@@ -127,17 +142,11 @@ class CustomLogoView(context : Context, attrs : AttributeSet?) : GLSurfaceView(c
             GLES32.glBindVertexArray(0)
 
             // initialize texture
-            val resIds = intArrayOf(R.drawable.floppy_disk, R.drawable.cd, R.drawable.computer_flipped,
-                R.drawable.mouse, R.drawable.floppy_disk_red, R.drawable.floppy_disk_green)
-            assert(resIds.size == textures.size)
             GLES32.glGenTextures(textures.size, textures, 0);
 
-            for ((index, resId) in resIds.withIndex()) {
+            for ((index, texBitmap) in textureBitmaps.withIndex()) {
                 GLES32.glBindTexture(GLES32.GL_TEXTURE_2D, textures[index])
 
-                val texBitmap = BitmapFactory
-                    .decodeResource(res, resId)
-                    .copy(Bitmap.Config.ARGB_8888, false)
                 val w = texBitmap.width
                 val h = texBitmap.height
                 val pixels = ByteBuffer.allocate(w * h * 4)
@@ -193,11 +202,14 @@ class CustomLogoView(context : Context, attrs : AttributeSet?) : GLSurfaceView(c
         vertexSrc = String(resources.openRawResource(R.raw.vertex).readAllBytes())
         fragmentSrc = String(resources.openRawResource(R.raw.fragment).readAllBytes())
         res = resources
+        if(textureBitmaps.size == 0)
+            loadTextures()
 
         setZOrderOnTop(true)
         holder.setFormat(PixelFormat.RGBA_8888)
         setEGLConfigChooser(8, 8, 8, 8, 16, 0)
         setEGLContextClientVersion(3)
+        preserveEGLContextOnPause = true
         setRenderer(RendererImpl)
         renderMode = RENDERMODE_CONTINUOUSLY
     }

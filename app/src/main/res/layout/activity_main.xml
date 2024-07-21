@@ -30,6 +30,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <hr.jakovnovak.games.floppydisk.ui.main.CustomLogoView
+            android:id="@+id/logo"
             android:layout_width="100dp"
             android:layout_height="100dp"
             app:layout_constraintBottom_toTopOf="@+id/playGameButton"

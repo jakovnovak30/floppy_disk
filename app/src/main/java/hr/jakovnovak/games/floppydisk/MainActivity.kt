@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
+import android.opengl.GLSurfaceView
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -17,6 +18,7 @@ class MainActivity : Activity() {
     private lateinit var startButton : Button
     private lateinit var aboutButton : Button
     private lateinit var textArea : TextView
+    private lateinit var logo : GLSurfaceView
     private lateinit var sharedPreferences: SharedPreferences
 
     private fun updateBackground() {
@@ -43,6 +45,7 @@ class MainActivity : Activity() {
         val darkModeButton = findViewById<Button>(R.id.darkModeButton)
         textArea = findViewById(R.id.mainMenuTitle)
         rootView = findViewById(R.id.container)
+        logo = findViewById(R.id.logo)
 
         sharedPreferences = baseContext.getSharedPreferences("floppy_disk", MODE_PRIVATE)
         darkMode = sharedPreferences.getBoolean("darkMode", false)
@@ -74,5 +77,9 @@ class MainActivity : Activity() {
         super.onResume()
         textArea.text = "Floppy Disk"
         aboutVisible = false
+    }
+
+    override fun onPause() {
+        super.onPause()
     }
 }
