@@ -11,7 +11,7 @@ data class Obstacle(var x : Float, var y : Float, var height : Float, var width 
 class Game(private val view: GameSurfaceView) {
     val towers: MutableList<Obstacle> = mutableListOf()
     val cds : MutableList<Obstacle> = mutableListOf()
-    val floppy: FloppyDisk = FloppyDisk(-0.3f, 0f)
+    val floppy: FloppyDisk = FloppyDisk(-0.6f, 0f)
     private var score = 0
 
     private val listeners : MutableList<GameStateListener> = mutableListOf()
