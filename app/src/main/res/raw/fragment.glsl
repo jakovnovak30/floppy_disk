@@ -2,10 +2,19 @@
 
 precision mediump float;
 
-in vec3 color;
+in vec2 uvCoord;
+in vec2 posNormal;
 
 out vec4 fragColor;
 
+uniform float time;
+uniform sampler2D texSampler;
+
 void main() {
-    fragColor = vec4(color, 1.0);
+    /*
+    if(posNormal.y > time)
+            discard;
+*/
+
+    fragColor = texture(texSampler, uvCoord);
 }
