@@ -5,11 +5,13 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.PixelFormat
+import android.opengl.EGL14
 import android.opengl.GLES32
 import android.opengl.GLSurfaceView
 import android.util.AttributeSet
 import android.util.Log
 import hr.jakovnovak.games.floppydisk.R
+import kotlinx.coroutines.processNextEventInCurrentThread
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
@@ -20,11 +22,19 @@ class CustomLogoView(context : Context, attrs : AttributeSet?) : GLSurfaceView(c
     companion object RendererImpl : Renderer {
         private val vao = IntArray(1)
         private val vbo = IntArray(2) // za xy i uv koordinate
-        private val texture = IntArray(1)
+        private val textures = IntArray(2)
         private var program : Int = 0
         private lateinit var vertexSrc : String
         private lateinit var fragmentSrc : String
         private lateinit var res : Resources
+
+        // parametri za liniju
+        private val XWidth = 0.1f
+        private val YHeight = 0.15f
+        private var currX = -1f
+        private var currY =  1f
+        // trenutna tekstura
+        private var currTex = 0
 
         private val xy_coords = floatArrayOf(
             -1f, -1f,
@@ -87,6 +97,10 @@ class CustomLogoView(context : Context, attrs : AttributeSet?) : GLSurfaceView(c
             GLES32.glDeleteShader(fragment)
             GLES32.glUseProgram(program)
 
+            GLES32.glUniform1f(GLES32.glGetUniformLocation(program, "XWidth"), XWidth)
+            GLES32.glUniform1f(GLES32.glGetUniformLocation(program, "YHeight"), YHeight)
+            GLES32.glUniform1i(GLES32.glGetUniformLocation(program, "texSampler"), 0)
+
             // initialize buffers
             GLES32.glGenVertexArrays(1, vao, 0)
             GLES32.glBindVertexArray(vao[0])
@@ -113,44 +127,74 @@ class CustomLogoView(context : Context, attrs : AttributeSet?) : GLSurfaceView(c
             GLES32.glBindVertexArray(0)
 
             // initialize texture
-            GLES32.glGenTextures(1, texture, 0);
-            GLES32.glActiveTexture(GLES32.GL_TEXTURE0)
-            GLES32.glBindTexture(GLES32.GL_TEXTURE_2D, texture[0])
+            GLES32.glGenTextures(2, textures, 0);
+            GLES32.glBindTexture(GLES32.GL_TEXTURE_2D, textures[0])
 
-                val texBitmap = BitmapFactory
+                var texBitmap = BitmapFactory
                     .decodeResource(res, R.drawable.floppy_disk)
                     .copy(Bitmap.Config.ARGB_8888, false)
-                val w = texBitmap.width
-                val h = texBitmap.height
-                val pixels = ByteBuffer.allocate(w * h * 4)
+                var w = texBitmap.width
+                var h = texBitmap.height
+                var pixels = ByteBuffer.allocate(w * h * 4)
                 texBitmap.copyPixelsToBuffer(pixels)
                 pixels.rewind()
                 GLES32.glTexImage2D(GLES32.GL_TEXTURE_2D, 0, GLES32.GL_RGBA, w, h, 0, GLES32.GL_RGBA, GLES32.GL_UNSIGNED_BYTE, pixels)
                 GLES32.glGenerateMipmap(GLES32.GL_TEXTURE_2D)
 
-                GLES32.glUniform1i(GLES32.glGetUniformLocation(program, "texSampler"), 0)
+            GLES32.glBindTexture(GLES32.GL_TEXTURE_2D, 0)
+
+
+            GLES32.glBindTexture(GLES32.GL_TEXTURE_2D, textures[1])
+                texBitmap = BitmapFactory
+                    .decodeResource(res, R.drawable.cd)
+                    .copy(Bitmap.Config.ARGB_8888, false)
+                w = texBitmap.width
+                h = texBitmap.height
+                pixels = ByteBuffer.allocate(w * h * 4)
+                texBitmap.copyPixelsToBuffer(pixels)
+                pixels.rewind()
+                GLES32.glTexImage2D(GLES32.GL_TEXTURE_2D, 0, GLES32.GL_RGBA, w, h, 0, GLES32.GL_RGBA, GLES32.GL_UNSIGNED_BYTE, pixels)
+                GLES32.glGenerateMipmap(GLES32.GL_TEXTURE_2D)
             GLES32.glBindTexture(GLES32.GL_TEXTURE_2D, 0)
         }
 
         override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
-            // TODO: slozi ovo kak spada
             GLES32.glViewport(0, 0, width, height)
+            EGL14.eglSurfaceAttrib(EGL14.eglGetCurrentDisplay(),
+                EGL14.eglGetCurrentSurface(EGL14.EGL_DRAW),
+                EGL14.EGL_SWAP_BEHAVIOR,
+                EGL14.EGL_BUFFER_PRESERVED);
         }
 
         override fun onDrawFrame(gl: GL10?) {
-            GLES32.glClear(GLES32.GL_COLOR_BUFFER_BIT or GLES32.GL_DEPTH_BUFFER_BIT)
-
             GLES32.glUseProgram(program)
 
-            GLES32.glUniform1f(GLES32.glGetUniformLocation(program, "time"), (System.currentTimeMillis() % 60).toFloat() / 60 * 2 - 1)
+            GLES32.glUniform1f(GLES32.glGetUniformLocation(program, "currX"), currX)
+            GLES32.glUniform1f(GLES32.glGetUniformLocation(program, "currY"), currY)
+            if(currX + XWidth >= 1f && currY - YHeight <= -1f)
+                GLES32.glUniform1i(GLES32.glGetUniformLocation(program, "lastFrame"), 1)
+            else
+                GLES32.glUniform1i(GLES32.glGetUniformLocation(program, "lastFrame"), 0)
+
             GLES32.glBindVertexArray(vao[0])
             GLES32.glActiveTexture(GLES32.GL_TEXTURE0)
-            GLES32.glBindTexture(GLES32.GL_TEXTURE_2D, texture[0])
+            GLES32.glBindTexture(GLES32.GL_TEXTURE_2D, textures[currTex])
                 GLES32.glDrawArrays(GLES32.GL_TRIANGLES, 0, xy_coords.size / 2)
             GLES32.glBindTexture(GLES32.GL_TEXTURE_2D, 0)
             GLES32.glBindVertexArray(0)
 
-            Thread.sleep(100)
+            Log.d("test", "Curr x: $currX, curr y: $currY")
+            currX += XWidth
+            if(currX >= 1f) {
+                currX = -1f
+                currY -= YHeight
+                if(currY <= -1f) {
+                    currY = 1f
+                    currTex = (currTex + 1) % textures.size
+                }
+            }
+
+            Thread.sleep(30)
         }
     }
 
