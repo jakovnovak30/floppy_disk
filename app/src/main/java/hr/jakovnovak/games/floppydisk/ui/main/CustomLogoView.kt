@@ -22,7 +22,7 @@ class CustomLogoView(context : Context, attrs : AttributeSet?) : GLSurfaceView(c
     companion object RendererImpl : Renderer {
         private val vao = IntArray(1)
         private val vbo = IntArray(2) // za xy i uv koordinate
-        private val textures = IntArray(2)
+        private val textures = IntArray(6)
         private var program : Int = 0
         private lateinit var vertexSrc : String
         private lateinit var fragmentSrc : String
@@ -30,7 +30,7 @@ class CustomLogoView(context : Context, attrs : AttributeSet?) : GLSurfaceView(c
 
         // parametri za liniju
         private val XWidth = 0.1f
-        private val YHeight = 0.15f
+        private val YHeight = 0.2f
         private var currX = -1f
         private var currY =  1f
         // trenutna tekstura
@@ -46,13 +46,13 @@ class CustomLogoView(context : Context, attrs : AttributeSet?) : GLSurfaceView(c
             -1f,  1f
         )
         private val uv_coords = floatArrayOf(
-            0f, 0f,
             0f, 1f,
-            1f, 0f,
-
-            1f, 0f,
+            0f, 0f,
             1f, 1f,
-            0f, 1f
+
+            1f, 1f,
+            1f, 0f,
+            0f, 0f
         )
 
         override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
@@ -127,35 +127,27 @@ class CustomLogoView(context : Context, attrs : AttributeSet?) : GLSurfaceView(c
             GLES32.glBindVertexArray(0)
 
             // initialize texture
-            GLES32.glGenTextures(2, textures, 0);
-            GLES32.glBindTexture(GLES32.GL_TEXTURE_2D, textures[0])
+            val resIds = intArrayOf(R.drawable.floppy_disk, R.drawable.cd, R.drawable.computer_flipped,
+                R.drawable.mouse, R.drawable.floppy_disk_red, R.drawable.floppy_disk_green)
+            assert(resIds.size == textures.size)
+            GLES32.glGenTextures(textures.size, textures, 0);
 
-                var texBitmap = BitmapFactory
-                    .decodeResource(res, R.drawable.floppy_disk)
+            for ((index, resId) in resIds.withIndex()) {
+                GLES32.glBindTexture(GLES32.GL_TEXTURE_2D, textures[index])
+
+                val texBitmap = BitmapFactory
+                    .decodeResource(res, resId)
                     .copy(Bitmap.Config.ARGB_8888, false)
-                var w = texBitmap.width
-                var h = texBitmap.height
-                var pixels = ByteBuffer.allocate(w * h * 4)
+                val w = texBitmap.width
+                val h = texBitmap.height
+                val pixels = ByteBuffer.allocate(w * h * 4)
                 texBitmap.copyPixelsToBuffer(pixels)
                 pixels.rewind()
                 GLES32.glTexImage2D(GLES32.GL_TEXTURE_2D, 0, GLES32.GL_RGBA, w, h, 0, GLES32.GL_RGBA, GLES32.GL_UNSIGNED_BYTE, pixels)
                 GLES32.glGenerateMipmap(GLES32.GL_TEXTURE_2D)
 
-            GLES32.glBindTexture(GLES32.GL_TEXTURE_2D, 0)
-
-
-            GLES32.glBindTexture(GLES32.GL_TEXTURE_2D, textures[1])
-                texBitmap = BitmapFactory
-                    .decodeResource(res, R.drawable.cd)
-                    .copy(Bitmap.Config.ARGB_8888, false)
-                w = texBitmap.width
-                h = texBitmap.height
-                pixels = ByteBuffer.allocate(w * h * 4)
-                texBitmap.copyPixelsToBuffer(pixels)
-                pixels.rewind()
-                GLES32.glTexImage2D(GLES32.GL_TEXTURE_2D, 0, GLES32.GL_RGBA, w, h, 0, GLES32.GL_RGBA, GLES32.GL_UNSIGNED_BYTE, pixels)
-                GLES32.glGenerateMipmap(GLES32.GL_TEXTURE_2D)
-            GLES32.glBindTexture(GLES32.GL_TEXTURE_2D, 0)
+                GLES32.glBindTexture(GLES32.GL_TEXTURE_2D, 0)
+            }
         }
 
         override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
@@ -171,7 +163,7 @@ class CustomLogoView(context : Context, attrs : AttributeSet?) : GLSurfaceView(c
 
             GLES32.glUniform1f(GLES32.glGetUniformLocation(program, "currX"), currX)
             GLES32.glUniform1f(GLES32.glGetUniformLocation(program, "currY"), currY)
-            if(currX + XWidth >= 1f && currY - YHeight <= -1f)
+            if(currX + XWidth >= 1f && currY - YHeight <= -1.05f)
                 GLES32.glUniform1i(GLES32.glGetUniformLocation(program, "lastFrame"), 1)
             else
                 GLES32.glUniform1i(GLES32.glGetUniformLocation(program, "lastFrame"), 0)
@@ -183,7 +175,6 @@ class CustomLogoView(context : Context, attrs : AttributeSet?) : GLSurfaceView(c
             GLES32.glBindTexture(GLES32.GL_TEXTURE_2D, 0)
             GLES32.glBindVertexArray(0)
 
-            Log.d("test", "Curr x: $currX, curr y: $currY")
             currX += XWidth
             if(currX >= 1f) {
                 currX = -1f

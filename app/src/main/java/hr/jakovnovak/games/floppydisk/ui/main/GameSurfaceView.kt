@@ -46,8 +46,6 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null) : Surface
     }
 
     override fun onDraw(canvas: Canvas) {
-        Log.d("OVO je tag", "Unutar onDraw metode sam!")
-
         super.onDraw(canvas)
         rect.set(0, 0, width, height)
         canvas.drawBitmap(background, null, rect, null)
