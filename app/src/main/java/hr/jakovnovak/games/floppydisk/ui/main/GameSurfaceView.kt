@@ -135,7 +135,6 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null):
     override fun gameOver(score: Int) {
         var color = Color.WHITE
         while(game.diskFalling()) {
-            Log.d("test", "padam...")
             val canvas : Canvas = holder.lockCanvas()
             this.onDraw(canvas)
             canvas.drawColor(color, BlendMode.PLUS)

@@ -112,13 +112,6 @@ class Game(private val view: GameSurfaceView) {
     fun diskFalling() : Boolean {
         floppy.y += 0.1f // hardkodirano za sad, TODO: refactoring?
 
-        if(floppy.y > 1f)
-            return false
-
-        return true
-        return towers.any {
-            it.x < floppy.x + floppyWidth && it.x > floppy.x
-                    && floppy.y + floppyHeight > it.y
-        }
+        return floppy.y < 1f
     }
 }

@@ -1,16 +1,14 @@
 package hr.jakovnovak.games.floppydisk
 
 import android.os.Bundle
-import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentActivity
 import hr.jakovnovak.games.floppydisk.ui.main.GameStateListener
 import hr.jakovnovak.games.floppydisk.ui.main.GameSurfaceView
 import hr.jakovnovak.games.floppydisk.ui.main.popups.GameOverFragment
 
-class GameActivity : AppCompatActivity() {
+class GameActivity : FragmentActivity() {
     private lateinit var gameSurfaceView: GameSurfaceView
-    private lateinit var scoreText : TextView
     private val listener = object : GameStateListener {
         override fun scoreChanged(newScore : Int) { } // TODO: provjeri ak je haj skor!
         override fun gameOver(score : Int) {
