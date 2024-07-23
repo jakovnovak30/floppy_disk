@@ -35,6 +35,7 @@ class Game(private val view: GameSurfaceView) {
     }
 
     fun attach(listener : GameStateListener) = listeners.add(listener)
+    fun detach(listener: GameStateListener) = listeners.remove(listener)
     private fun notifyScore() = listeners.forEach { l -> l.scoreChanged(score) }
     private fun notifyOver() = listeners.forEach { l -> l.gameOver(score) }
 
