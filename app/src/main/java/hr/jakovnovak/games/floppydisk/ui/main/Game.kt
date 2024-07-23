@@ -12,6 +12,8 @@ class Game(private val view: GameSurfaceView) {
     val towers: MutableList<Obstacle> = mutableListOf()
     val cds : MutableList<Obstacle> = mutableListOf()
     val floppy: FloppyDisk = FloppyDisk(-0.6f, 0f)
+    private val desiredFps = 80f
+    val fpsInterval : Float = 1000f / desiredFps
     private var score = 0
 
     private val listeners : MutableList<GameStateListener> = mutableListOf()
@@ -63,8 +65,6 @@ class Game(private val view: GameSurfaceView) {
         }
         towers.map { t -> Obstacle(t.x + 0.5f, t.y, t.height, t.width) }
 
-        val desiredFps = 80f
-        val fpsInterval : Float = 1000f / desiredFps
         var lastTime : Long = 0
 
         while(true) {
@@ -107,5 +107,18 @@ class Game(private val view: GameSurfaceView) {
 
         // GAME OVER
         notifyOver()
+    }
+
+    fun diskFalling() : Boolean {
+        floppy.y += 0.1f // hardkodirano za sad, TODO: refactoring?
+
+        if(floppy.y > 1f)
+            return false
+
+        return true
+        return towers.any {
+            it.x < floppy.x + floppyWidth && it.x > floppy.x
+                    && floppy.y + floppyHeight > it.y
+        }
     }
 }

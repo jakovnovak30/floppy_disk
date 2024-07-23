@@ -1,16 +1,15 @@
 package hr.jakovnovak.games.floppydisk.ui.main
 
+import android.app.Activity
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
-import android.content.res.AssetManager
 import android.graphics.Bitmap
+import android.graphics.BlendMode
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.Paint.Style
 import android.graphics.Path
 import android.graphics.Rect
-import android.graphics.Typeface
 import android.util.AttributeSet
 import android.util.Log
 import android.view.SurfaceHolder
@@ -19,6 +18,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.toRectF
 import hr.jakovnovak.games.floppydisk.R
+import hr.jakovnovak.games.floppydisk.ui.main.popups.GameOverFragment
 
 class GameSurfaceView(context : Context, attrs : AttributeSet? = null):
     SurfaceView(context, attrs), SurfaceHolder.Callback, GameStateListener {
@@ -79,7 +79,6 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null):
         rect.set(floppyX, floppyY, floppyX2, floppyY2)
         canvas.drawBitmap(floppyDiskSprite, null, rect, null)
 
-        val currScore = score
         game.towers.forEach {
             val (towerX, towerY, towerX2, towerY2) = convertCoords(it)
             val deltaX = towerX2 - towerX
@@ -90,8 +89,8 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null):
             canvas.drawBitmap(computerSprite, null, rect, null)
 
             textPath.addRect(rect.toRectF(), Path.Direction.CW)
-            canvas.drawTextOnPath(currScore.toString(), textPath,
-                deltaX.toFloat()/3, deltaY.toFloat()/2, textPaint)
+            canvas.drawTextOnPath(String.format("%03d", score), textPath,
+                deltaX.toFloat()/5, deltaY.toFloat() * 3/5, textPaint)
             textPath.reset()
         }
 
@@ -118,6 +117,7 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null):
     }
 
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
+        Log.d("surface", "Surface changed")
         // TODO: istraži kak ovo dela
         return
     }
@@ -127,9 +127,21 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null):
         gameThread.interrupt()
     }
 
-    override fun scoreChanged(newScore: Int) { this.score = newScore }
+    override fun scoreChanged(newScore: Int) {
+        this.score = newScore
+        // TODO: if score > 999, easter egg porukica
+    }
 
     override fun gameOver(score: Int) {
-        // animacija za kraj
+        var color = Color.WHITE
+        while(game.diskFalling()) {
+            Log.d("test", "padam...")
+            val canvas : Canvas = holder.lockCanvas()
+            this.onDraw(canvas)
+            canvas.drawColor(color, BlendMode.PLUS)
+            color = (color + Color.BLACK) / 2
+            holder.unlockCanvasAndPost(canvas)
+            Thread.sleep(game.fpsInterval.toLong())
+        }
     }
 }

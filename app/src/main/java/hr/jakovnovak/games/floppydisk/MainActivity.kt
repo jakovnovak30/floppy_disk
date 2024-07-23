@@ -8,6 +8,7 @@ import android.opengl.GLSurfaceView
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 
@@ -42,7 +43,7 @@ class MainActivity : Activity() {
 
         startButton = findViewById(R.id.playGameButton)
         aboutButton = findViewById(R.id.aboutGameButton)
-        val darkModeButton = findViewById<Button>(R.id.darkModeButton)
+        val darkModeButton = findViewById<ImageButton>(R.id.darkModeButton)
         textArea = findViewById(R.id.mainMenuTitle)
         rootView = findViewById(R.id.container)
         logo = findViewById(R.id.logo)
