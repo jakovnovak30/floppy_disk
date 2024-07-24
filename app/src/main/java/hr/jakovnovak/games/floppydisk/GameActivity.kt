@@ -12,7 +12,9 @@ class GameActivity : FragmentActivity() {
     private val listener = object : GameStateListener {
         override fun scoreChanged(newScore : Int) { } // TODO: provjeri ak je haj skor!
         override fun gameOver(score : Int) {
-            GameOverFragment().show(supportFragmentManager, "GAME_OVER")
+            val popupFragment = GameOverFragment()
+            popupFragment.isCancelable = false
+            popupFragment.show(supportFragmentManager, "GAME_OVER")
         }
     }
 

@@ -1,6 +1,5 @@
 package hr.jakovnovak.games.floppydisk.ui.main
 
-import android.app.Activity
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.graphics.Bitmap
@@ -14,11 +13,13 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.SurfaceHolder
 import android.view.SurfaceView
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.toRectF
 import hr.jakovnovak.games.floppydisk.R
-import hr.jakovnovak.games.floppydisk.ui.main.popups.GameOverFragment
+import hr.jakovnovak.games.floppydisk.model.Game
+import hr.jakovnovak.games.floppydisk.model.Obstacle
 
 class GameSurfaceView(context : Context, attrs : AttributeSet? = null):
     SurfaceView(context, attrs), SurfaceHolder.Callback, GameStateListener {
@@ -55,7 +56,8 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null):
             // TODO: game over screen...
         }
 
-        textPaint.color = Color.valueOf(99f / 255, 199f / 255, 77f / 255).toArgb()
+        //textPaint.color = Color.valueOf(99f / 255, 199f / 255, 77f / 255).toArgb()
+        textPaint.color = ContextCompat.getColor(context, R.color.green)
         textPaint.textSize = 70f
         textPaint.typeface = resources.getFont(R.font.zx_spectrum)
     }
@@ -74,8 +76,10 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null):
             )
         }
 
-        val (floppyX, floppyY, floppyX2, floppyY2) = convertCoords(Obstacle(game.floppy.x, game.floppy.y,
-                                                                            Game.floppyHeight, Game.floppyWidth))
+        val (floppyX, floppyY, floppyX2, floppyY2) = convertCoords(
+            Obstacle(game.floppy.x, game.floppy.y,
+                                                                            Game.floppyHeight, Game.floppyWidth)
+        )
         rect.set(floppyX, floppyY, floppyX2, floppyY2)
         canvas.drawBitmap(floppyDiskSprite, null, rect, null)
 

@@ -21,6 +21,7 @@ class GameOverFragment : DialogFragment() {
                 val intent = Intent(context, MainActivity::class.java)
                 startActivity(intent)
             }
+            .setCancelable(false)
             .create()
     }
 }

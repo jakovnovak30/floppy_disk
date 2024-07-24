@@ -1,6 +1,5 @@
 package hr.jakovnovak.games.floppydisk
 
-import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
@@ -11,8 +10,10 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
+import androidx.fragment.app.FragmentActivity
+import hr.jakovnovak.games.floppydisk.ui.main.popups.SettingsFragment
 
-class MainActivity : Activity() {
+class MainActivity : FragmentActivity() {
     private var aboutVisible : Boolean = false
     private var darkMode : Boolean = false
     private lateinit var rootView: View
@@ -71,6 +72,12 @@ class MainActivity : Activity() {
             editor.putBoolean("darkMode", darkMode)
             editor.apply()
             updateBackground()
+        }
+
+        val settingsButton = findViewById<ImageButton>(R.id.settingsButton)
+        settingsButton.setOnClickListener {
+            val popupFragment = SettingsFragment()
+            popupFragment.show(supportFragmentManager, "SETTINGS")
         }
     }
 

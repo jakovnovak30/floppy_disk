@@ -1,5 +1,7 @@
-package hr.jakovnovak.games.floppydisk.ui.main
+package hr.jakovnovak.games.floppydisk.model
 
+import hr.jakovnovak.games.floppydisk.ui.main.GameStateListener
+import hr.jakovnovak.games.floppydisk.ui.main.GameSurfaceView
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.random.Random
