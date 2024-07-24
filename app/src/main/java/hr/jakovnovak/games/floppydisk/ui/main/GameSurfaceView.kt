@@ -18,6 +18,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.toRectF
 import hr.jakovnovak.games.floppydisk.R
+import hr.jakovnovak.games.floppydisk.model.Difficulty
 import hr.jakovnovak.games.floppydisk.model.Game
 import hr.jakovnovak.games.floppydisk.model.Obstacle
 
@@ -28,7 +29,9 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null):
                                                 R.drawable.background_night else R.drawable.background,
                                         context.theme)
                                     ?.toBitmap() ?: throw IllegalStateException()
-    private val floppyDiskSprite : Bitmap = ResourcesCompat.getDrawable(context.resources, R.drawable.floppy_disk, context.theme)
+    private val floppyDiskSprite : Bitmap = ResourcesCompat.getDrawable(context.resources,
+                                                            context.getSharedPreferences("floppy_disk", MODE_PRIVATE)
+                                                             .getInt("playerIcon", R.drawable.floppy_disk), context.theme)
                                                           ?.toBitmap() ?: throw IllegalStateException()
     private val computerSprite : Bitmap = ResourcesCompat.getDrawable(context.resources, R.drawable.computer_flipped, context.theme)
                                                         ?.toBitmap() ?: throw IllegalStateException()
@@ -45,7 +48,7 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null):
     init {
         Log.d(null, "GameSurfaceView Initialized!")
         holder.addCallback(this)
-        game = Game(this)
+        game = Game(this, context.getSharedPreferences("floppy_disk", MODE_PRIVATE).getInt("difficulty", Difficulty.MEDIUM.num))
         game.attach(this)
         gameThread = Thread {
             try {

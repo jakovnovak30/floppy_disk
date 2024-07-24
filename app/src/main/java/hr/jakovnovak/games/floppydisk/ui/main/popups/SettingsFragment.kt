@@ -4,7 +4,6 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.graphics.BlendMode
 import android.graphics.BlendModeColorFilter
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat

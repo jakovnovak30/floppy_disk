@@ -10,7 +10,7 @@ import kotlin.random.Random
 data class FloppyDisk(var x : Float, var y : Float, var velocity : Float = -0.01f)
 data class Obstacle(var x : Float, var y : Float, var height : Float, var width : Float, var horizontalVelocity : Float = Game.horizontalVelocity)
 
-class Game(private val view: GameSurfaceView) {
+class Game(private val view: GameSurfaceView, private val difficulty: Int = Difficulty.MEDIUM.num) {
     val towers: MutableList<Obstacle> = mutableListOf()
     val cds : MutableList<Obstacle> = mutableListOf()
     val floppy: FloppyDisk = FloppyDisk(-0.6f, 0f)
@@ -98,7 +98,7 @@ class Game(private val view: GameSurfaceView) {
             // postoji šansa da se spawna cd ako nema dovoljno cd-a
             // TODO: difficulty? potencijalno...
             val rand = Random.nextFloat()
-            if(cds.size < 3 && rand < cdSpawnChance && System.currentTimeMillis() - lastTime > coolDowntime) {
+            if(cds.size < difficulty && rand < cdSpawnChance && System.currentTimeMillis() - lastTime > coolDowntime) {
                 cds.add(Obstacle(1f, Random.nextFloat() - 0.5f, cdHeight, cdWidth, 0f))
                 lastTime = System.currentTimeMillis()
             }
