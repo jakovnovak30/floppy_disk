@@ -1,7 +1,6 @@
 package hr.jakovnovak.games.floppydisk.ui.main.popups
 
 import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent

@@ -21,6 +21,7 @@ import hr.jakovnovak.games.floppydisk.R
 import hr.jakovnovak.games.floppydisk.model.Difficulty
 import hr.jakovnovak.games.floppydisk.model.Game
 import hr.jakovnovak.games.floppydisk.model.Obstacle
+import java.util.concurrent.locks.ReentrantLock
 
 class GameSurfaceView(context : Context, attrs : AttributeSet? = null):
     SurfaceView(context, attrs), SurfaceHolder.Callback, GameStateListener {
@@ -40,7 +41,9 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null):
     private val rect = Rect()
 
     internal val game : Game
-    private val gameThread : Thread
+    internal val gameThread : Thread
+    internal val lock = ReentrantLock(true)
+    internal val condition = lock.newCondition()
     private var score = 0
     private val textPaint = Paint()
     private val textPath = Path()
@@ -51,13 +54,17 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null):
         game = Game(this, context.getSharedPreferences("floppy_disk", MODE_PRIVATE).getInt("difficulty", Difficulty.MEDIUM.num))
         game.attach(this)
         gameThread = Thread {
-            try {
-                game.gameLoop()
-            } catch (_: InterruptedException) { /* stop the thread */
+            while(!game.isOver) {
+                try {
+                    game.gameLoop()
+                } catch (_: InterruptedException) { /* pause the thread */
+                    lock.lock()
+                    condition.await()
+                    lock.unlock()
+                }
             }
         }
 
-        //textPaint.color = Color.valueOf(99f / 255, 199f / 255, 77f / 255).toArgb()
         textPaint.color = ContextCompat.getColor(context, R.color.green)
         textPaint.textSize = 70f
         textPaint.typeface = resources.getFont(R.font.zx_spectrum)
@@ -118,6 +125,9 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null):
             game.setVelocity(0.1f)
         }
 
+        lock.lock()
+        condition.signalAll()
+        lock.unlock()
         gameThread.start()
     }
 
@@ -129,7 +139,6 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null):
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {
         game.detach(this)
-        gameThread.interrupt()
     }
 
     override fun scoreChanged(newScore: Int) {

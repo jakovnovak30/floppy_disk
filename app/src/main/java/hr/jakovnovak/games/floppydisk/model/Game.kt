@@ -17,8 +17,10 @@ class Game(private val view: GameSurfaceView, private val difficulty: Int = Diff
     private val desiredFps = 80f
     val fpsInterval : Float = 1000f / desiredFps
     private var score = 0
+    private var lastTime : Long = 0
 
     private val listeners : MutableList<GameStateListener> = mutableListOf()
+    var isOver = false
 
     // static variables
     companion object {
@@ -36,6 +38,15 @@ class Game(private val view: GameSurfaceView, private val difficulty: Int = Diff
 
         // defaultna vrijednost -> moremo ju menjati u @see Obstacle
         val horizontalVelocity = 0.03f
+    }
+
+    init {
+        for (i in 0..1) {
+            towers.add(Obstacle(i * towerSpacingHorizontal, -1f, towerHeight, towerWidth))
+            towers.add(Obstacle(i * towerSpacingHorizontal, 1f - towerHeight, towerHeight, towerWidth))
+        }
+        towers.map { t -> Obstacle(t.x + 1.5f, t.y, t.height, t.width) }
+
     }
 
     fun attach(listener : GameStateListener) = listeners.add(listener)
@@ -61,14 +72,6 @@ class Game(private val view: GameSurfaceView, private val difficulty: Int = Diff
     }
 
     fun gameLoop() {
-        for (i in 0..1) {
-            towers.add(Obstacle(i * towerSpacingHorizontal, -1f, towerHeight, towerWidth))
-            towers.add(Obstacle(i * towerSpacingHorizontal, 1f - towerHeight, towerHeight, towerWidth))
-        }
-        towers.map { t -> Obstacle(t.x + 0.5f, t.y, t.height, t.width) }
-
-        var lastTime : Long = 0
-
         while(true) {
             floppy.y -= floppy.velocity * 0.4f
             val countBefore = towers.count { t -> t.x < -0.33f }
@@ -108,6 +111,7 @@ class Game(private val view: GameSurfaceView, private val difficulty: Int = Diff
         }
 
         // GAME OVER
+        isOver = true
         notifyOver()
     }
 
