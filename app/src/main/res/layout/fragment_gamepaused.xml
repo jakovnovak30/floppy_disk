@@ -92,8 +92,9 @@
             android:layout_marginEnd="10dp"
             android:background="@color/grey"
             android:fontFamily="@font/zx_spectrum"
+            android:textSize="25sp"
             android:textColor="@color/red"
-            android:text="No" />
+            android:text="0" />
 
         <Button
             android:id="@+id/resume_button"
@@ -103,7 +104,8 @@
             android:layout_marginStart="10dp"
             android:background="@color/grey"
             android:fontFamily="@font/zx_spectrum"
+            android:textSize="25sp"
             android:textColor="@color/green"
-            android:text="Yes" />
+            android:text="1" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
