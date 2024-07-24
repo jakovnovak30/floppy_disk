@@ -48,6 +48,7 @@
             android:orientation="horizontal">
 
             <ImageButton
+                android:id="@+id/cd_easy"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
@@ -56,6 +57,7 @@
                 android:src="@drawable/cd_easy" />
 
             <ImageButton
+                android:id="@+id/cd_medium"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
@@ -64,6 +66,7 @@
                 android:src="@drawable/cd_medium" />
 
             <ImageButton
+                android:id="@+id/cd_hard"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
@@ -90,6 +93,7 @@
             android:orientation="horizontal">
 
             <ImageButton
+                android:id="@+id/floppy_red"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
@@ -98,6 +102,7 @@
                 android:src="@drawable/floppy_disk_red" />
 
             <ImageButton
+                android:id="@+id/floppy_green"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
@@ -106,6 +111,7 @@
                 android:src="@drawable/floppy_disk_green" />
 
             <ImageButton
+                android:id="@+id/floppy_blue"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"

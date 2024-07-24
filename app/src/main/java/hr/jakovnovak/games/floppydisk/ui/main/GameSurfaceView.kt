@@ -52,8 +52,6 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null):
                 game.gameLoop()
             } catch (_: InterruptedException) { /* stop the thread */
             }
-
-            // TODO: game over screen...
         }
 
         //textPaint.color = Color.valueOf(99f / 255, 199f / 255, 77f / 255).toArgb()
