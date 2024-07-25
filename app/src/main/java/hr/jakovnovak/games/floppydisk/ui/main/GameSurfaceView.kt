@@ -17,10 +17,12 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.toRectF
+import androidx.fragment.app.FragmentActivity
 import hr.jakovnovak.games.floppydisk.R
 import hr.jakovnovak.games.floppydisk.model.Difficulty
 import hr.jakovnovak.games.floppydisk.model.Game
 import hr.jakovnovak.games.floppydisk.model.Obstacle
+import hr.jakovnovak.games.floppydisk.ui.main.popups.GamePausedFragment
 import java.util.concurrent.locks.ReentrantLock
 
 class GameSurfaceView(context : Context, attrs : AttributeSet? = null):
@@ -115,20 +117,25 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null):
     }
 
     fun update() {
-        val canvas : Canvas = holder.lockCanvas()
+        val canvas : Canvas = holder.lockCanvas() ?: return
         this.onDraw(canvas)
         holder.unlockCanvasAndPost(canvas)
     }
 
     override fun surfaceCreated(holder: SurfaceHolder) {
-        setOnClickListener {
-            game.setVelocity(0.1f)
-        }
+        if(!gameThread.isAlive) {
+            setOnClickListener {
+                game.setVelocity(0.1f)
+            }
 
-        lock.lock()
-        condition.signalAll()
-        lock.unlock()
-        gameThread.start()
+            lock.lock()
+            condition.signalAll()
+            lock.unlock()
+            gameThread.start()
+        }
+        else {
+            this.update()
+        }
     }
 
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
@@ -138,7 +145,24 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null):
     }
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {
-        game.detach(this)
+        if(!game.isOver) {
+            lock.lock()
+            val num = lock.getWaitQueueLength(condition)
+            lock.unlock()
+            if(num > 0)
+                return
+
+            gameThread.interrupt()
+            val pausePopup = GamePausedFragment()
+            pausePopup.apply {
+                isCancelable = false
+                show((this@GameSurfaceView.context as FragmentActivity)
+                    .supportFragmentManager, "GAME_PAUSED")
+            }
+        }
+        else {
+            game.detach(this)
+        }
     }
 
     override fun scoreChanged(newScore: Int) {
