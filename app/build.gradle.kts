@@ -5,11 +5,11 @@ plugins {
 
 android {
     namespace = "hr.jakovnovak.games.floppydisk"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "hr.jakovnovak.games.floppydisk"
-        minSdk = 33
+        minSdk = 34
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"

@@ -3,6 +3,10 @@ package hr.jakovnovak.games.floppydisk
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
+import android.media.AudioAttributes
+import android.media.AudioManager
+import android.media.MediaPlayer
+import android.media.SoundPool
 import android.opengl.GLSurfaceView
 import android.os.Bundle
 import android.view.View
@@ -22,6 +26,7 @@ class MainActivity : FragmentActivity() {
     private lateinit var textArea : TextView
     private lateinit var logo : GLSurfaceView
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var mediaPlayer: MediaPlayer
 
     private fun updateBackground() {
         rootView.background = ResourcesCompat.getDrawable(baseContext.resources,
@@ -79,15 +84,24 @@ class MainActivity : FragmentActivity() {
             val popupFragment = SettingsFragment()
             popupFragment.show(supportFragmentManager, "SETTINGS")
         }
+
+        // sound
+        mediaPlayer = MediaPlayer.create(this, R.raw.eight_bit_menu)
+        mediaPlayer.apply {
+            isLooping = true
+            start()
+        }
     }
 
     override fun onResume() {
         super.onResume()
         textArea.text = "Floppy Disk"
         aboutVisible = false
+        mediaPlayer.start()
     }
 
     override fun onPause() {
         super.onPause()
+        mediaPlayer.stop()
     }
 }

@@ -11,7 +11,6 @@ import android.opengl.GLSurfaceView
 import android.util.AttributeSet
 import android.util.Log
 import hr.jakovnovak.games.floppydisk.R
-import kotlinx.coroutines.processNextEventInCurrentThread
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
