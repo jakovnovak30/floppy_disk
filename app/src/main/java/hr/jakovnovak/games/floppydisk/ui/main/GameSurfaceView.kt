@@ -18,6 +18,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.toRectF
 import androidx.fragment.app.FragmentActivity
+import hr.jakovnovak.games.floppydisk.GameActivity
 import hr.jakovnovak.games.floppydisk.R
 import hr.jakovnovak.games.floppydisk.model.Difficulty
 import hr.jakovnovak.games.floppydisk.model.Game
@@ -88,7 +89,7 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null):
 
         val (floppyX, floppyY, floppyX2, floppyY2) = convertCoords(
             Obstacle(game.floppy.x, game.floppy.y,
-                                                                            Game.floppyHeight, Game.floppyWidth)
+                Game.floppyHeight, Game.floppyWidth)
         )
         rect.set(floppyX, floppyY, floppyX2, floppyY2)
         canvas.drawBitmap(floppyDiskSprite, null, rect, null)
@@ -123,8 +124,9 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null):
     }
 
     override fun surfaceCreated(holder: SurfaceHolder) {
-        if(!gameThread.isAlive) {
+        if(!gameThread.isAlive && !game.isOver) {
             setOnClickListener {
+                (context as GameActivity).playEffect("JUMP_EFFECT", 0.6f)
                 game.setVelocity(0.1f)
             }
 
@@ -171,6 +173,10 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null):
     }
 
     override fun gameOver(score: Int) {
+        (context as GameActivity).apply {
+            mediaPlayer.stop()
+            playEffect("GAME_OVER_EFFECT", 2f, 3)
+        }
         var color = Color.WHITE
         while(game.diskFalling()) {
             val canvas : Canvas = holder.lockCanvas()
@@ -181,4 +187,6 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null):
             Thread.sleep(game.fpsInterval.toLong())
         }
     }
+
+    override fun cdCreated() { }
 }

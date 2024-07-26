@@ -53,6 +53,7 @@ class Game(private val view: GameSurfaceView, private val difficulty: Int = Diff
     fun detach(listener: GameStateListener) = listeners.remove(listener)
     private fun notifyScore() = listeners.forEach { l -> l.scoreChanged(score) }
     private fun notifyOver() = listeners.forEach { l -> l.gameOver(score) }
+    private fun notifyCdCreated() = listeners.forEach { l -> l.cdCreated() }
 
     private fun testIntersect() : Boolean {
         if(floppy.y > 1f)
@@ -102,6 +103,7 @@ class Game(private val view: GameSurfaceView, private val difficulty: Int = Diff
             // TODO: difficulty? potencijalno...
             val rand = Random.nextFloat()
             if(cds.size < difficulty && rand < cdSpawnChance && System.currentTimeMillis() - lastTime > coolDowntime) {
+                notifyCdCreated()
                 cds.add(Obstacle(1f, Random.nextFloat() - 0.5f, cdHeight, cdWidth, 0f))
                 lastTime = System.currentTimeMillis()
             }
