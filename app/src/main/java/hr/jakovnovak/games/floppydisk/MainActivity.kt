@@ -13,6 +13,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.activity.addCallback
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentActivity
 import hr.jakovnovak.games.floppydisk.ui.main.popups.SettingsFragment
@@ -46,6 +47,9 @@ class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // back
+        this.onBackPressedDispatcher.addCallback { this@MainActivity.finishAffinity() }
 
         startButton = findViewById(R.id.playGameButton)
         aboutButton = findViewById(R.id.aboutGameButton)
