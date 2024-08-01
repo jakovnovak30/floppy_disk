@@ -127,7 +127,7 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null):
         if(!gameThread.isAlive && !game.isOver) {
             setOnClickListener {
                 (context as GameActivity).playEffect("JUMP_EFFECT", 0.6f)
-                game.setVelocity(0.1f)
+                game.setVelocity(0.12f)
             }
 
             lock.lock()

@@ -75,6 +75,8 @@ class Game(private val view: GameSurfaceView, private val difficulty: Int = Diff
     fun gameLoop() {
         while(true) {
             floppy.y -= floppy.velocity * 0.4f
+            floppy.velocity -= 0.01f // acceleration
+
             val countBefore = towers.count { t -> t.x < -0.33f }
             towers.forEach { it.x -= horizontalVelocity }
             cds.forEach {
