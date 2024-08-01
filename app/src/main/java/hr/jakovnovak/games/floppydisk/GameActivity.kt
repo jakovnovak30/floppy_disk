@@ -1,5 +1,6 @@
 package hr.jakovnovak.games.floppydisk
 
+import android.content.SharedPreferences
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.media.SoundPool
@@ -23,13 +24,25 @@ class GameActivity : FragmentActivity() {
     )
     internal lateinit var mediaPlayer: MediaPlayer
 
-    internal lateinit var soundPool: SoundPool
+    private lateinit var soundPool: SoundPool
     private val soundEffects : MutableMap<String, Int> = mutableMapOf()
 
+    private lateinit var sharedPreferences: SharedPreferences
+    private var highScoreChanged = false
+
     private val listener = object : GameStateListener {
-        override fun scoreChanged(newScore : Int) { } // TODO: provjeri ak je haj skor!
-        override fun gameOver(score : Int) {
-            val popupFragment = GameOverFragment()
+        override fun scoreChanged(newScore : UInt) {
+            val currHighScore = sharedPreferences.getInt("highScore", 0).toUInt()
+
+            if(newScore > currHighScore) {
+                highScoreChanged = true
+                sharedPreferences.edit()
+                    .putInt("highScore", newScore.toInt())
+                    .apply()
+            }
+        }
+        override fun gameOver(score : UInt) {
+            val popupFragment = GameOverFragment(highScoreChanged)
             popupFragment.apply {
                 isCancelable = false
                 show(supportFragmentManager, "GAME_OVER")
@@ -56,13 +69,15 @@ class GameActivity : FragmentActivity() {
             }
         }
 
+        // shared preferences
+        sharedPreferences = getSharedPreferences("floppy_disk", MODE_PRIVATE)
+
         // sound
         mediaPlayer = MediaPlayer.create(this, backgroundSongs.random())
         mediaPlayer.start()
 
         soundPool = SoundPool.Builder()
             .setMaxStreams(16)
-            .setContext(this)
             .setAudioAttributes(AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_GAME)
                 .build())

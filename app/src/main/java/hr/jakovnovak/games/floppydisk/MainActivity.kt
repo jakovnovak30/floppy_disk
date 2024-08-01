@@ -3,10 +3,7 @@ package hr.jakovnovak.games.floppydisk
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
-import android.media.AudioAttributes
-import android.media.AudioManager
 import android.media.MediaPlayer
-import android.media.SoundPool
 import android.opengl.GLSurfaceView
 import android.os.Bundle
 import android.view.View
@@ -16,66 +13,71 @@ import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentActivity
+import hr.jakovnovak.games.floppydisk.databinding.ActivityMainBinding
 import hr.jakovnovak.games.floppydisk.ui.main.popups.SettingsFragment
 
 class MainActivity : FragmentActivity() {
     private var aboutVisible : Boolean = false
     private var darkMode : Boolean = false
-    private lateinit var rootView: View
-    private lateinit var startButton : Button
-    private lateinit var aboutButton : Button
-    private lateinit var textArea : TextView
-    private lateinit var logo : GLSurfaceView
+    private lateinit var binding : ActivityMainBinding
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var mediaPlayer: MediaPlayer
+    private var highScore : UInt = 0u
 
     private fun updateBackground() {
-        rootView.background = ResourcesCompat.getDrawable(baseContext.resources,
+        binding.root.background = ResourcesCompat.getDrawable(baseContext.resources,
                                     if(darkMode) R.drawable.background_night else R.drawable.background,
                                     baseContext?.theme)
 
         val newColor : Int = if(darkMode) Color.DKGRAY else Color.LTGRAY
         val newTextColor : Int = if(darkMode) Color.WHITE else Color.BLACK
-        startButton.setBackgroundColor(newColor)
-        aboutButton.setBackgroundColor(newColor)
+        binding.playGameButton.setBackgroundColor(newColor)
+        binding.aboutGameButton.setBackgroundColor(newColor)
 
-        startButton.setTextColor(newTextColor)
-        aboutButton.setTextColor(newTextColor)
-        textArea.setTextColor(newTextColor)
+        binding.playGameButton.setTextColor(newTextColor)
+        binding.aboutGameButton.setTextColor(newTextColor)
+        binding.mainMenuTitle.setTextColor(newTextColor)
+        binding.highScore.setTextColor(newTextColor)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // back
         this.onBackPressedDispatcher.addCallback { this@MainActivity.finishAffinity() }
 
-        startButton = findViewById(R.id.playGameButton)
-        aboutButton = findViewById(R.id.aboutGameButton)
-        val darkModeButton = findViewById<ImageButton>(R.id.darkModeButton)
-        textArea = findViewById(R.id.mainMenuTitle)
-        rootView = findViewById(R.id.container)
-        logo = findViewById(R.id.logo)
-
+        // init shared preferences
         sharedPreferences = baseContext.getSharedPreferences("floppy_disk", MODE_PRIVATE)
+
+        // check high score
+        highScore = sharedPreferences.getInt("highScore", 0).toUInt()
+        if(highScore != 0u) {
+            binding.highScore.text = "High score: $highScore"
+            binding.highScore.visibility = View.VISIBLE
+        }
+
+        // check dark/light mode
         darkMode = sharedPreferences.getBoolean("darkMode", false)
         updateBackground()
 
-        startButton.setOnClickListener {
-            textArea.text = "Starting game..."
+        binding.playGameButton.setOnClickListener {
+            binding.mainMenuTitle.text = "Starting game..."
+            binding.highScore.visibility = View.GONE
 
             val intent = Intent(this, GameActivity::class.java)
             startActivity(intent)
         }
 
-        aboutButton.setOnClickListener {
+        binding.aboutGameButton.setOnClickListener {
             aboutVisible = !aboutVisible
 
-            textArea.text = if(aboutVisible) "Simple Flappy bird clone made by: @jakovnovak30" else "Floppy Disk"
+            binding.mainMenuTitle.text = if(aboutVisible) "Simple Flappy bird clone made by: @jakovnovak30" else "Floppy Disk"
+            binding.highScore.visibility = if(aboutVisible || highScore == 0u) View.GONE else View.VISIBLE
         }
 
-        darkModeButton.setOnClickListener {
+        binding.darkModeButton.setOnClickListener {
             darkMode = !darkMode
             val editor = sharedPreferences.edit()
             editor.putBoolean("darkMode", darkMode)
@@ -99,7 +101,9 @@ class MainActivity : FragmentActivity() {
 
     override fun onResume() {
         super.onResume()
-        textArea.text = "Floppy Disk"
+        binding.mainMenuTitle.text = "Floppy Disk"
+        if(highScore != 0u)
+            binding.highScore.visibility = View.VISIBLE
         aboutVisible = false
         mediaPlayer.start()
     }

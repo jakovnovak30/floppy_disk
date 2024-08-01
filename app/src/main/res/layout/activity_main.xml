@@ -29,6 +29,24 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/high_score"
+            style="@style/Widget.MaterialComponents.TextView"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/zx_spectrum"
+            android:text="High score: 0"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:typeface="serif"
+            android:layout_marginBottom="80dp"
+            app:layout_constraintBottom_toTopOf="@+id/logo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mainMenuTitle" />
+
         <hr.jakovnovak.games.floppydisk.ui.main.CustomLogoView
             android:id="@+id/logo"
             android:layout_width="100dp"

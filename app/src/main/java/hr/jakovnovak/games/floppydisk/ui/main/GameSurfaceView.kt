@@ -47,7 +47,7 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null):
     internal val gameThread : Thread
     internal val lock = ReentrantLock(true)
     internal val condition = lock.newCondition()
-    private var score = 0
+    private var score : UInt = 0u
     private val textPaint = Paint()
     private val textPath = Path()
 
@@ -104,7 +104,7 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null):
             canvas.drawBitmap(computerSprite, null, rect, null)
 
             textPath.addRect(rect.toRectF(), Path.Direction.CW)
-            canvas.drawTextOnPath(String.format("%03d", score), textPath,
+            canvas.drawTextOnPath(String.format("%03d", score.toInt()), textPath,
                 deltaX.toFloat()/5, deltaY.toFloat() * 3/5, textPaint)
             textPath.reset()
         }
@@ -167,12 +167,12 @@ class GameSurfaceView(context : Context, attrs : AttributeSet? = null):
         }
     }
 
-    override fun scoreChanged(newScore: Int) {
+    override fun scoreChanged(newScore: UInt) {
         this.score = newScore
         // TODO: if score > 999, easter egg porukica
     }
 
-    override fun gameOver(score: Int) {
+    override fun gameOver(score: UInt) {
         (context as GameActivity).apply {
             mediaPlayer.stop()
             playEffect("GAME_OVER_EFFECT", 2f, 3)

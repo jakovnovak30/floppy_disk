@@ -16,7 +16,7 @@ class Game(private val view: GameSurfaceView, private val difficulty: Int = Diff
     val floppy: FloppyDisk = FloppyDisk(-0.6f, 0f)
     private val desiredFps = 80f
     val fpsInterval : Float = 1000f / desiredFps
-    private var score = 0
+    private var score : UInt = 0u
     private var lastTime : Long = 0
 
     private val listeners : MutableList<GameStateListener> = mutableListOf()
@@ -100,7 +100,6 @@ class Game(private val view: GameSurfaceView, private val difficulty: Int = Diff
             cds.removeAll { it.x + it.width < -1f }
 
             // postoji šansa da se spawna cd ako nema dovoljno cd-a
-            // TODO: difficulty? potencijalno...
             val rand = Random.nextFloat()
             if(cds.size < difficulty && rand < cdSpawnChance && System.currentTimeMillis() - lastTime > coolDowntime) {
                 notifyCdCreated()

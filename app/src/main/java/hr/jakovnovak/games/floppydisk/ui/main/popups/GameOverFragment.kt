@@ -5,15 +5,22 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.DialogFragment
 import hr.jakovnovak.games.floppydisk.GameActivity
 import hr.jakovnovak.games.floppydisk.MainActivity
 import hr.jakovnovak.games.floppydisk.databinding.FragmentGameoverBinding
 
-class GameOverFragment : DialogFragment() {
+class GameOverFragment(private val highScoreChanged : Boolean) : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(activity)
         val binding = FragmentGameoverBinding.inflate(activity?.layoutInflater ?: throw IllegalStateException("Missing activity!"))
+
+        // check if high score changed
+        if(highScoreChanged) {
+            binding.highScoreChanged.visibility = View.VISIBLE
+            binding.highScoreChanged2.visibility = View.VISIBLE
+        }
 
         binding.newGameButton.setOnClickListener {
             val intent = Intent(context, GameActivity::class.java)

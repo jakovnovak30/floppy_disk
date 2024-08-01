@@ -36,6 +36,49 @@
             android:layout_height="20dp" />
 
         <TextView
+            android:id="@+id/high_score_changed"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="monospace"
+            android:textColor="@color/green"
+            android:textSize="5sp"
+            android:text="
+░▒▓███████▓▒░  ░▒▓████████▓▒░ ░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░\n
+░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░        ░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░\n
+░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░        ░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░\n
+░▒▓█▓▒░░▒▓█▓▒░ ░▒▓██████▓▒░   ░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░\n
+░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░        ░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░\n
+░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░        ░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░\n
+░▒▓█▓▒░░▒▓█▓▒░ ░▒▓████████▓▒░  ░▒▓█████████████▓▒░\n
+"
+            />
+        <TextView
+            android:id="@+id/high_score_changed2"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="monospace"
+            android:textColor="@color/green"
+            android:textSize="5sp"
+            android:text="
+░▒▓███████▓▒░  ░▒▓████████▓▒░  ░▒▓███████▓▒░ ░▒▓████████▓▒░ ░▒▓█▓▒░\n
+░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░        ░▒▓█▓▒░           ░▒▓█▓▒░     ░▒▓█▓▒░\n
+░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░        ░▒▓█▓▒░           ░▒▓█▓▒░     ░▒▓█▓▒░\n
+░▒▓███████▓▒░  ░▒▓██████▓▒░    ░▒▓██████▓▒░     ░▒▓█▓▒░     ░▒▓█▓▒░\n
+░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░               ░▒▓█▓▒░    ░▒▓█▓▒░     ░▒▓█▓▒░\n
+░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░               ░▒▓█▓▒░    ░▒▓█▓▒░\n
+░▒▓███████▓▒░  ░▒▓████████▓▒░ ░▒▓███████▓▒░     ░▒▓█▓▒░     ░▒▓█▓▒░\n
+"
+            />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
+        <TextView
             android:id="@+id/play_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
